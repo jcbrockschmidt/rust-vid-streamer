@@ -1,11 +1,23 @@
 extern crate gstreamer as gst;
 use gst::prelude::*;
+use std::{ env, process };
+
+fn usage(args: Vec<String>) {
+    println!("Usage: {} device ipv4 port", args[0]);
+}
 
 fn main() {
+    // Read command line arguments
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 4 {
+	usage(args);
+	process::exit(1);
+    }
+    let device = String::from(&args[1]);
+    let ipv4 = String::from(&args[2]);
+    let port = String::from(&args[3]);
+
     println!("Initializing pipeline...");
-    let device = "/dev/video0";
-    let ipv4 = "127.0.0.1";
-    let port = "5000";
 
     // Initialize GStreamer
     gst::init().unwrap();
@@ -33,14 +45,14 @@ fn main() {
     pay.link(&sink).expect("Could not link encoder to RTP payload");
 
     // Direct the source to the specified camera device
-    src.set_property_from_str("device", device);
+    src.set_property_from_str("device", &device);
 
     // Direct the sink to our host
-    sink.set_property_from_str("host", ipv4);
-    sink.set_property_from_str("port", port);
+    sink.set_property_from_str("host", &ipv4);
+    sink.set_property_from_str("port", &port);
 
     // Start the stream pipeline
-    println!("Starting stream...");
+    println!("Streaming {} to {}:{}...", &device, &ipv4, &port);
     pipeline
         .set_state(gst::State::Playing)
         .expect("Unable to set the pipeline to the `Playing` state");
