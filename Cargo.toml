@@ -13,5 +13,5 @@ name = "receiver"
 path = "src/receiver/bin/main.rs"
 
 [dependencies]
-gstreamer = { git = "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs" }
+gstreamer = "^0.15.2"
 ctrlc = "^3.1.3"
