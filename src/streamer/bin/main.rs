@@ -1,3 +1,4 @@
+extern crate ctrlc;
 extern crate gstreamer as gst;
 use gst::prelude::*;
 use std::{env, process};
@@ -44,8 +45,19 @@ fn start_stream(device: &String, ip: &String, port: &String) {
     gst::init().unwrap();
     let pipeline = create_pipeline(device, ip, port);
 
+    // Gracefully handle a keyboard interrupt (ctrl-C)
+    let pipeline_weak = pipeline.downgrade();
+    ctrlc::set_handler(move || {
+	let pipeline = match pipeline_weak.upgrade() {
+	    Some(pipeline) => pipeline,
+	    None => return,
+	};
+	println!("Ending stream. Please wait...");
+	pipeline.send_event(gst::Event::new_eos().build());
+    }).expect("Error setting Ctrl-C handler");
+
     // Start the stream pipeline
-    println!("Streaming {} to {}:{}...", device, ip, port);
+    println!("Streaming {} to {}:{}... (Use Ctrl-C to end stream)", device, ip, port);
     pipeline
         .set_state(gst::State::Playing)
         .expect("Unable to set the pipeline to the `Playing` state");
