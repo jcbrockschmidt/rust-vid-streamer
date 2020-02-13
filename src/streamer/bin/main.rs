@@ -1,6 +1,6 @@
 extern crate gstreamer as gst;
 use gst::prelude::*;
-use std::{ env, process };
+use std::{env, process};
 
 fn usage(args: Vec<String>) {
     println!("Usage: {} device ipv4 port", args[0]);
@@ -23,7 +23,7 @@ fn create_pipeline(device: &String, ip: &String, port: &String) -> gst::Pipeline
 
     // Build the pipeline
     pipeline.add_many(&[&src, &conv, &enc, &pay, &sink]).unwrap();
-    src.link(&conv).expect("Could not link source to vidoe converter");
+    src.link(&conv).expect("Could not link source to video converter");
     conv.link(&enc).expect("Could not link video converter to encoder");
     enc.link(&pay).expect("Could not link encoder to RTP payload");
     pay.link(&sink).expect("Could not link encoder to RTP payload");
@@ -35,7 +35,7 @@ fn create_pipeline(device: &String, ip: &String, port: &String) -> gst::Pipeline
     sink.set_property_from_str("host", ip);
     sink.set_property_from_str("port", port);
 
-    return pipeline
+    return pipeline;
 }
 
 fn start_stream(device: &String, ip: &String, port: &String) {
