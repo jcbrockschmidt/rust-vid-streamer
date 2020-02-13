@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 gstreamer = { git = "https://gitlab.freedesktop.org/gstreamer/gstreamer-rs" }
+ctrlc = "^3.1.3"
