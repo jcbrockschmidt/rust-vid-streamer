@@ -12,6 +12,10 @@ path = "src/streamer/bin/main.rs"
 name = "receiver"
 path = "src/receiver/bin/main.rs"
 
+[[bin]]
+name = "recorder"
+path = "src/recorder/bin/main.rs"
+
 [dependencies]
 gstreamer = "^0.15.2"
 ctrlc = "^3.1.3"

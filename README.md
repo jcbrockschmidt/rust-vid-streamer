@@ -49,3 +49,13 @@ cd target/debug/
 ```
 
 This will listen to the stream we initiated in the previous section and display it to the screen. Depending on when you run this executable, it may take a few moments for video to appear due to the stream's high latency.
+
+
+### Record a Video
+
+To record a video, run
+
+```
+cd target/debug/
+./recorder $DEVICE
+```
