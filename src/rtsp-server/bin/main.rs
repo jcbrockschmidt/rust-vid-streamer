@@ -11,6 +11,7 @@ fn usage(args: Vec<String>) {
 
 fn start_stream(device: &String, port: &String) {
     let server = gst_rtsp_server::RTSPServer::new();
+    server.set_service(&port);
     let mounts = server.get_mount_points().unwrap();
     let factory = gst_rtsp_server::RTSPMediaFactory::new();
     factory.set_launch("( videotestsrc ! x264enc ! rtph264pay name=pay0 pt=96 )");
