@@ -1,6 +1,6 @@
 extern crate gstreamer as gst;
 use gst::prelude::*;
-use std::{env, process};
+use std::{env, fmt, process};
 
 extern crate gstreamer_rtsp_server as gst_rtsp_server;
 use gst_rtsp_server::prelude::*;
@@ -14,7 +14,7 @@ fn start_stream(device: &String, port: &String) {
     server.set_service(&port);
     let mounts = server.get_mount_points().unwrap();
     let factory = gst_rtsp_server::RTSPMediaFactory::new();
-    factory.set_launch("( videotestsrc ! x264enc ! rtph264pay name=pay0 pt=96 )");
+    factory.set_launch(&*format!("v4l2src device={} ! videoconvert ! video/x-raw,framerate=30/1 ! x264enc speed-preset=ultrafast tune=zerolatency ! rtph264pay name=pay0 pt=96", device));
     factory.set_shared(true);
     mounts.add_factory("/stream", &factory);
 
