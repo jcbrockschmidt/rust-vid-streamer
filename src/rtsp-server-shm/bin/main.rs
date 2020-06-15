@@ -56,12 +56,12 @@ mod mobile_rtsp_factory {
                 _url: &gst_rtsp::RTSPUrl,
             ) -> Option<gst::Element> {
                 let bin = gst::Bin::new(None);
-                let src = gst::ElementFactory::make("shmsrc", None)
-	            .expect("Could not create shmsrc");
-                let enc = gst::ElementFactory::make("h264parse", None)
-	            .expect("Could not create shmsrc");
+                let src =
+                    gst::ElementFactory::make("shmsrc", None).expect("Could not create shmsrc");
+                let enc =
+                    gst::ElementFactory::make("h264parse", None).expect("Could not create shmsrc");
                 let pay = gst::ElementFactory::make("rtph264pay", Some("pay0"))
-	            .expect("Could not create rtph264pay");
+                    .expect("Could not create rtph264pay");
 
                 src.set_property_from_str("socket-path", SOCKET_PATH);
 
@@ -106,16 +106,13 @@ fn usage(args: Vec<String>) {
 
 fn start_stream(device: &String, port: &String) {
     let pipeline = gst::Pipeline::new(None);
-    let src = gst::ElementFactory::make("v4l2src", None)
-	.expect("Could not create source element");
+    let src = gst::ElementFactory::make("v4l2src", None).expect("Could not create source element");
     let conv = gst::ElementFactory::make("videoconvert", None)
-	.expect("Could not create videoconvert element");
-    let filter = gst::ElementFactory::make("capsfilter", None)
-	.expect("Could not create capsfilter element");
-    let enc = gst::ElementFactory::make("x264enc", None)
-        .expect("Could not create x264enc");
-    let pay = gst::ElementFactory::make("shmsink", None)
-        .expect("Could not create shmsink");
+        .expect("Could not create videoconvert element");
+    let filter =
+        gst::ElementFactory::make("capsfilter", None).expect("Could not create capsfilter element");
+    let enc = gst::ElementFactory::make("x264enc", None).expect("Could not create x264enc");
+    let pay = gst::ElementFactory::make("shmsink", None).expect("Could not create shmsink");
 
     let video_caps =
         gst::Caps::new_simple("video/x-raw", &[("width", &640i32), ("height", &480i32)]);
@@ -129,7 +126,9 @@ fn start_stream(device: &String, port: &String) {
     pay.set_property_from_str("sync", "true");
     pay.set_property_from_str("wait-for-connection", "false");
 
-    pipeline.add_many(&[&src, &conv, &filter, &enc, &pay]).unwrap();
+    pipeline
+        .add_many(&[&src, &conv, &filter, &enc, &pay])
+        .unwrap();
     gst::Element::link_many(&[&src, &conv, &filter, &enc, &pay]).unwrap();
 
     pipeline.set_state(gst::State::Playing);
@@ -142,13 +141,11 @@ fn start_stream(device: &String, port: &String) {
     mounts.add_factory("/stream", &factory);
 
     let id = server.attach(None);
-    unsafe {
-        println!(
-            "Streaming {} at rtsp://127.0.0.1:{}/stream",
-            VIDEO_DEVICE,
-            server.get_bound_port()
-        );
-    }
+    println!(
+        "Streaming {} at rtsp://127.0.0.1:{}/stream",
+        device,
+        server.get_bound_port()
+    );
     let main_loop = glib::MainLoop::new(None, false);
     main_loop.run();
     glib::source_remove(id);

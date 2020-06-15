@@ -20,6 +20,10 @@ path = "src/recorder/bin/main.rs"
 name = "rtsp-server"
 path = "src/rtsp-server/bin/main.rs"
 
+[[bin]]
+name = "rtsp-server-shm"
+path = "src/rtsp-server-shm/bin/main.rs"
+
 [dependencies]
 ctrlc = "^3.1.3"
 glib = "^0.9.3"
