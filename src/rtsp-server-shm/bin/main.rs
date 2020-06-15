@@ -14,6 +14,7 @@ use glib::subclass::prelude::*;
 use glib::translate::*;
 use gst_rtsp_server::prelude::*;
 use gst_rtsp_server::subclass::prelude::*;
+use std::fs;
 
 static SOCKET_PATH: &str = "/tmp/rust-vid-streamer-shm";
 
@@ -105,6 +106,9 @@ fn usage(args: Vec<String>) {
 }
 
 fn start_stream(device: &String, port: &String) {
+    // Clean up any previous shared memory file
+    fs::remove_file("/tmp/rust-vid-streamer-shm").unwrap();
+
     let pipeline = gst::Pipeline::new(None);
     let src = gst::ElementFactory::make("v4l2src", None).expect("Could not create source element");
     let conv = gst::ElementFactory::make("videoconvert", None)
